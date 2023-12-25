@@ -1,0 +1,271 @@
+package CRUD;
+
+public class Employee 
+{
+	int Id;
+	String name;
+	String gender;
+	Double salary;
+	static int getid;
+	
+	public Employee(String name, String gender, Double salary) {
+		super();
+		Id = ++getid;
+		this.name = name;
+		this.gender = gender;
+		this.salary = salary;
+	}
+	public int getId() {
+		return Id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	public Double getSalary() {
+		return salary;
+	}
+	public void setSalary(Double salary) {
+		this.salary = salary;
+	}
+	@Override
+	public String toString() {
+		return "Employee [Id=" + Id + ", name=" + name + ", gender=" + gender + ", salary=" + salary + "]";
+	}
+	
+	
+	
+}
+
+
+package CRUD;
+
+public class Node {
+	 Employee data;
+	 Node next;//self reference
+	 
+	 public Node(Employee data)
+	 {
+		 this.data=data;
+		 this.next=null;//address of other node
+	 }
+}
+
+
+package CRUD;
+
+import java.util.Scanner;
+
+public class CRUD 
+{
+	Node root;
+	
+	void createList() 
+	{
+		root=null;//root is never created but assigned as per need
+		//first node is called as root;
+	}
+	
+	void Register(Employee e)
+	{
+		Node n=new Node(e);
+		if(root==null)
+			root=n;
+		else
+		{
+			Node t=root;
+			while(t.next!=null)
+			{
+				t=t.next;
+			}	
+				t.next=n;
+		}
+		System.out.println("register "+e.getName());
+	}
+	
+	void search(int Id)
+	{
+		if(root==null)
+			System.out.println("empty List");
+		else
+		{
+			Node t=root;
+			while(t!=null && Id!=t.data.Id)
+			{
+				t=t.next;
+			}
+			if(t==null)
+				System.out.println(Id+" not Found");
+			else
+				System.out.println(Id+" Found in list\n"+t.data);	
+		}
+	}
+	
+	void delete(int Id)
+	{
+		if(root==null)
+			System.out.println("empty List");
+		else//not empty
+		{
+			Node t=root; Node t2=root;
+			while(t!=null && Id!=t.data.Id)
+			{
+				t2=t;
+				t=t.next;
+			}
+			if(t==null)//not found
+				System.out.println(Id+" not Found");
+			else//found
+			{
+				System.out.println(Id+" Found in list");
+				if(t==root)
+					root=root.next;
+				else if(t.next==null)
+					t2.next=null;
+				else
+					t2.next=t.next;
+				System.out.println(t.data.name+" deleted");
+			}
+		}
+	}
+	
+	void print_List() 
+	{
+		if(root==null)
+			System.out.println("empty List");
+		else
+		{
+			Node t=root;
+			while(t!=null)
+			{
+				System.out.println(t.data);
+				t=t.next;
+			}
+		}
+	}
+	
+	void update(int Id,String cat,String n)
+	{
+		if(root==null)
+			System.out.println("empty List");
+		else
+		{
+			Node t=root;
+			while(t!=null && Id!=t.data.Id)
+			{
+				t=t.next;
+			}
+			if(t==null)
+				System.out.println(Id+" not Found");
+			else
+			{
+				if(cat=="name")
+					t.data.setName(n);
+				else if(cat=="gender")
+					t.data.setGender(n);
+				else
+					t.data.setSalary(Double.parseDouble(n));
+				System.out.println(t.data.Id+" updated");
+			}	
+		}
+	}
+	
+	public static void main(String[] args) 
+	 {
+		Scanner in=new Scanner(System.in);
+		
+		CRUD s1=new CRUD();
+		int ch;
+		do
+		{
+			System.out.println("\n1:Register new employee\n2:Search by id\n3:Delete by id\n4:Update Details\n5:Print employee list\nENTER 0 to exit");
+			ch=in.nextInt();
+			
+			switch(ch)
+			{
+				case 1: 
+				{
+					System.out.println("Enter name, gender,salary of employee");
+						String name=in.next();
+						String gender=in.next();
+						double salary=in.nextDouble();
+						Employee e=new Employee(name,gender,salary);
+						s1.Register(e);
+						break;
+				}
+				case 2:
+						System.out.println("enter a id to search");
+						 int id=in.nextInt();
+						s1.search(id);
+					break;
+				case 3:
+						System.out.println("enter id to delete");
+						id=in.nextInt();
+						s1.delete(id);
+					break;
+				case 4:
+				{	
+					
+					char c;
+					do 
+					{
+					System.out.println("\t\t(n)Update name\n\t\t(g)update gender\n\t\t(s)update salary\n\t\tEnter e  to exit ");
+					 c=in.next().charAt(0);
+						switch(c)
+						{
+						case 'n':
+							{
+								System.out.println("enter id and name to update");
+								id=in.nextInt();
+								String name=in.next();
+								s1.update(id,"name",name);
+								break;
+							}
+						case 'g':
+						{
+							System.out.println("enter id and gender to update");
+							id=in.nextInt();
+							String g=in.next();
+							s1.update(id,"gender",g);
+							break;
+						}
+						case 's':
+						{
+							System.out.println("enter id and new salary to update");
+							id=in.nextInt();
+							Double s=in.nextDouble();
+							s1.update(id,"gender",s.toString());
+							break;
+						}
+						case 'e':
+							System.out.println("EXIT");
+							break;
+						default:
+							System.out.println("Enter right choice");
+						}
+				   }
+					while(c!='e');
+			   }	
+				break;
+				case 5:
+						s1.print_List();
+					break;
+				
+				case 0:
+					System.out.println("EXIT");
+					break;
+				default:
+					System.out.println("enter right choice");		
+			}
+		}
+		while(ch!=0);
+	 }
+}
